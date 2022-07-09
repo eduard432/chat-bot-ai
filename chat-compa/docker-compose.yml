@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  database:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/apps/mongo:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=whatsapp-bot
+      - MONGO_INITDB_ROOT_USERNAME=eduardo
+      - MONGO_INITDB_ROOT_PASSWORD=changoloco99 
