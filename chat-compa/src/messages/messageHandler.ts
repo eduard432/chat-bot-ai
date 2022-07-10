@@ -113,11 +113,13 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 			)
 			if (contextPrevMessages) {
 				context = parseMessages(contextPrevMessages)
-				context =
-					'Conversación anterior:\n' +
-					context +
-					'\n\n' +
-					'Conversación actual:\n'
+				if (context !== '') {
+					context =
+						'Mensajes anteriores:\n\n' +
+						context +
+						'\n' +
+						'Conversación actual:\n'
+				}
 			}
 		}
 

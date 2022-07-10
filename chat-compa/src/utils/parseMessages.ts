@@ -7,6 +7,7 @@ export const parseMessages = (
 	let fullText = ''
 	for (let i = 0; i < messages.length; i++) {
 		const message = messages[i]
+		if (typeof message === 'undefined') return ''
 		if (message?.fromServer) {
 			fullText += 'Amigo: ' + message?.text + '\n'
 		} else {
