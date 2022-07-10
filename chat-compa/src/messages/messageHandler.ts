@@ -1,6 +1,6 @@
 import WAWebJS, { Client } from 'whatsapp-web.js'
 import Conversation from '../models/Conversation'
-import { friendCompletition } from '../openai/openai'
+import { friendCompletition, keyWordsCompletition } from '../openai/openai'
 import Logger from '../utils/Logger'
 import { parseMessages } from '../utils/parseMessages'
 import { wait, waitForTypeMessage } from '../utils/wait'
@@ -9,8 +9,9 @@ import mediaHandler from './mediaHandler'
 import { validatePhone } from '../validator/validatePhone'
 import { random } from 'lodash'
 import Message from '../models/Message'
+import { getContext } from './getContext'
 
-const { err, grn, blu, log } = new Logger()
+const { err, grn, blu, log, gry } = new Logger()
 
 const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 	try {
@@ -33,7 +34,6 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		}
 
 		// Search for prev conversations
-
 		const document = await Conversation.findOne(
 			{ phone: phoneFrom },
 			{
@@ -88,8 +88,6 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		// Wait for random time, wait for more messages before response
 		await wait(random(2500, 4200))
 
-		// const getContext = Conversation.findOne({phone: phoneFrom}, {})
-
 		// Get whatsapp chat, for the sendStateTyping()
 		const chat = await message.getChat()
 		chat.sendStateTyping()
@@ -104,6 +102,26 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		if (documentUpdates?.lastMessages.length === 0) {
 			return
 		}
+
+		let context = ''
+
+		if (document) {
+			const contextPrevMessages = await getContext(
+				msg,
+				phoneFrom,
+				documentUpdates
+			)
+			if (contextPrevMessages) {
+				context = parseMessages(contextPrevMessages)
+				context =
+					'Conversación anterior:\n' +
+					context +
+					'\n\n' +
+					'Conversación actual:\n'
+			}
+		}
+
+		gry(context)
 
 		// Combine prevMessages with the stack
 		history += parseMessages(documentUpdates?.lastMessages)
@@ -123,6 +141,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 
 		// newMessage object from message
 		const newMessage = await Message.create({
+			phoneConversation: phoneFrom,
 			text: msg,
 			fromServer: false,
 		})
@@ -140,6 +159,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		// If AI Response, push the response to the DB history of messages
 		if (compl) {
 			const newMessageFromServer = await Message.create({
+				phoneConversation: phoneFrom,
 				text: compl,
 				fromServer: true,
 			})

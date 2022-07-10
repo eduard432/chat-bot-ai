@@ -1,5 +1,9 @@
 import { Configuration, CreateCompletionRequest, OpenAIApi } from 'openai'
-import { friendInstructions, initialFriendPrompt } from './prompts';
+import {
+	friendInstructions,
+	initialFriendPrompt,
+	initialKeyWordsPrompt,
+} from './prompts'
 
 const preConfig = {
 	model: 'text-davinci-002',
@@ -36,14 +40,24 @@ export const completion = async (
 	return response
 }
 
-export const friendCompletition = (prompt: string = initialFriendPrompt) =>
+export const friendCompletition = (prompt: string = initialFriendPrompt, context = '') =>
 	completion({
 		frequency_penalty: 0.5,
 		max_tokens: 80,
 		model: 'text-davinci-002',
 		presence_penalty: 0.9,
-		prompt: `${friendInstructions}${prompt}`,
+		prompt: `${friendInstructions}${context}${prompt}`,
 		stop: ['Amigo:', 'Tu:'],
 		temperature: 0.95,
+		top_p: 1,
+	})
+
+export const keyWordsCompletition = (prompt: string) =>
+	completion({
+		frequency_penalty: 0.5,
+		max_tokens: 80,
+		model: 'text-davinci-002',
+		prompt: `${initialKeyWordsPrompt}${prompt}`,
+		temperature: 0.7,
 		top_p: 1,
 	})

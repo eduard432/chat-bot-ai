@@ -8,4 +8,5 @@ export default class Logger {
 	public ylw = (l:any) => this.log(chalk.yellow(l))
 	public grn = (l:any) => this.log(chalk.green(l))
 	public mgt = (l:any) => this.log(chalk.magenta(l))
+	public gry = (l:any) => this.log(chalk.gray(l))
 }

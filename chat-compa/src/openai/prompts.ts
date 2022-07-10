@@ -3,5 +3,5 @@ const promptVentas = `La siguiente es una conversación con un asistente de IA. 
 // export const friendInstructions = `La siguiente es una conversación con un Amigo. El amigo es sincero, creativo, inteligente y amigable. Es un amigo que habla español y en el que confías mucho y te da consejos.\n`
 
 export const initialFriendPrompt = `Tu: Hola, que haces?\nAmigo: Estoy descansando del ejercicio.\n`
-export const friendInstructions2 = `La siguiente es una conversación con un Amigo. El amigo es sincero, creativo, inteligente y amigable. Es un amigo que habla español, se llama Eduardo y tiene 17 años:\n`
 export const friendInstructions = `La siguiente es una conversación con un Amigo. El amigo es sincero, inteligente, amigable, habla español y tiene 31 años:\n\n`
+export const initialKeyWordsPrompt = `Una IA que reconoce las palabras clave de un texto:\n\n"Te acuerdas de que trata mi novela"\nPalabras clave: Acuerdas, trata, novela\n\n"No puedo creer que no hayas respondido a mi mensaje"\n Palabras clave: No, respondido, mensaje\n\n"Tengo mucha tarea, y no tengo tiempo"\nPalabras clave: Tiempo, mucha, tarea\n\n`
