@@ -33,7 +33,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 			{ phone: phoneFrom },
 			{
 				messages: {
-					$slice: -5,
+					$slice: -8,
 				},
 				_id: 0,
 			}
