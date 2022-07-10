@@ -1,4 +1,9 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import {
+	getModelForClass,
+	modelOptions,
+	prop,
+	Ref,
+} from '@typegoose/typegoose'
 import { Message, MessageLast } from './Message'
 
 @modelOptions({
@@ -10,13 +15,13 @@ export class Conversation {
 	@prop({ required: true })
 	phone: string
 
-	@prop({ required: true })
-	messages: Message[]
+	@prop({ required: true, ref: () => Message })
+	messages: Ref<Message>[]
 
-	@prop({required: false})
+	@prop({ required: false })
 	lastMessages: MessageLast[]
 	// @prop({ required: true })
-	// history: string 
+	// history: string
 }
 
 export default getModelForClass(Conversation)

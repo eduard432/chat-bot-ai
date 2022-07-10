@@ -1,9 +1,8 @@
-import { modelOptions, prop } from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
 @modelOptions({
 	schemaOptions: {
 		timestamps: true,
-		_id: false,
 	},
 })
 export class Message {
@@ -25,3 +24,5 @@ export class MessageLast {
 	@prop({ required: true })
 	fromServer: boolean
 }
+
+export default getModelForClass(Message)

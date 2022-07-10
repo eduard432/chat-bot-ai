@@ -8,6 +8,7 @@ import errorMessageHandler from './errorMessageHandler'
 import mediaHandler from './mediaHandler'
 import { validatePhone } from '../validator/validatePhone'
 import { random } from 'lodash'
+import Message from '../models/Message'
 
 const { err, grn, blu, log } = new Logger()
 
@@ -41,13 +42,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 				},
 				_id: 0,
 			}
-		)
-
-		// newMessage object from message
-		const newMessage = {
-			text: msg,
-			fromServer: false,
-		}
+		).populate('messages')
 
 		let history = ''
 
@@ -59,8 +54,15 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 					phoneFrom,
 					errorMessageHandler['message-limit']
 				)
+
+			const matchedMessages = await Message.find({
+				_id: {
+					$in: document?.messages,
+				},
+			})
+
 			// Save prev messages on history
-			history = parseMessages(document?.messages)
+			history = parseMessages(matchedMessages)
 		} else {
 			// if doesnt exits, create
 			const newConversation = new Conversation({
@@ -84,7 +86,9 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		)
 
 		// Wait for random time, wait for more messages before response
-		await wait(random(2500, 4500))
+		await wait(random(2500, 4200))
+
+		// const getContext = Conversation.findOne({phone: phoneFrom}, {})
 
 		// Get whatsapp chat, for the sendStateTyping()
 		const chat = await message.getChat()
@@ -116,6 +120,13 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		client.sendMessage(phoneFrom, compl)
 
 		// Push the message to the DB history of messages
+
+		// newMessage object from message
+		const newMessage = await Message.create({
+			text: msg,
+			fromServer: false,
+		})
+
 		await Conversation.findOneAndUpdate(
 			{ phone: phoneFrom },
 			{
@@ -128,20 +139,23 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 
 		// If AI Response, push the response to the DB history of messages
 		if (compl) {
+			const newMessageFromServer = await Message.create({
+				text: compl,
+				fromServer: true,
+			})
+
 			await Conversation.findOneAndUpdate(
 				{ phone: phoneFrom },
 				{
 					$push: {
-						messages: {
-							text: compl,
-							fromServer: true,
-						},
+						messages: newMessageFromServer,
 					},
 				}
 			)
 		}
 	} catch (error) {
-		err(error)
+		// err(error)
+		log(error)
 	}
 }
 
