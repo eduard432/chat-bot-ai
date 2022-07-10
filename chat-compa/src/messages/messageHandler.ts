@@ -31,7 +31,12 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 
 		const document = await Conversation.findOne(
 			{ phone: phoneFrom },
-			{ messages: 1, _id: 0 }
+			{
+				messages: {
+					$slice: -5,
+				},
+				_id: 0,
+			}
 		)
 
 		const newMessage = {
@@ -42,7 +47,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		let history = ''
 
 		if (document) {
-			if (document?.messages.length >= 60)
+			if (document?.messages.length >= 100)
 				return client.sendMessage(
 					phoneFrom,
 					errorMessageHandler['message-limit']
