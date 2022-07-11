@@ -129,7 +129,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		history += parseMessages(documentUpdates?.lastMessages)
 
 		// Send OpenAi for a AI Response:
-		let compl = await friendCompletition(history + 'Amigo:')
+		let compl = await friendCompletition(history + 'Amigo:', context)
 
 		// Trim the response for spaces
 		compl = compl.trim()
