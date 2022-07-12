@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  chat-bot:
+    container_name: bot-message-handler
+    build:
+      context: .
+      target: production
+    volumes:
+      - ./:/usr/src/apps
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    links:
+      - database
+  database:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/apps/mongo:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=whatsapp-bot
+      - MONGO_INITDB_ROOT_USERNAME=eduardo
+      - MONGO_INITDB_ROOT_PASSWORD=changoloco99
