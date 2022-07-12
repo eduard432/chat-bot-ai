@@ -1,7 +1,0 @@
-node_modules
-.env
-package-lock.json
-examples
-exampleConversation.txt
-.wwebjs_auth
-images/**
