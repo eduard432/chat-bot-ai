@@ -10,7 +10,7 @@ import { filter } from 'lodash'
 
 dotenv.config()
 
-const { blu, grn, log, ylw } = new Logger()
+const { blu, grn } = new Logger()
 
 const main = async () => {
 	connectDb()
@@ -19,6 +19,7 @@ const main = async () => {
 		authStrategy: new LocalAuth(),
 		puppeteer: {
 			slowMo: 300,
+			args: ['--no-sandbox']
 		},
 	})
 
@@ -33,7 +34,10 @@ const main = async () => {
 		const unreadChats = filter(chats, (c) => c.unreadCount !== 0)
 		for (const chat of unreadChats) {
 			const messages = await chat?.fetchMessages({ limit: 10 })
-			const messagesUnread = filter(messages, (m) => m.ack === 1 && m.fromMe === false)
+			const messagesUnread = filter(
+				messages,
+				(m) => m.ack === 1 && m.fromMe === false
+			)
 			for (const message of messagesUnread) {
 				messageHandler(message, client)
 			}

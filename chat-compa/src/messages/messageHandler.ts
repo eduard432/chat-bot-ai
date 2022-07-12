@@ -1,6 +1,6 @@
 import WAWebJS, { Client } from 'whatsapp-web.js'
 import Conversation from '../models/Conversation'
-import { friendCompletition, keyWordsCompletition } from '../openai/openai'
+import { friendCompletition } from '../openai/openai'
 import Logger from '../utils/Logger'
 import { parseMessages } from '../utils/parseMessages'
 import { wait, waitForTypeMessage } from '../utils/wait'
@@ -49,7 +49,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 		// If document exits
 		if (document) {
 			// Search from message limit, if true, send error
-			if (document?.messages.length >= 100)
+			if (document?.messages?.length >= 100)
 				return client.sendMessage(
 					phoneFrom,
 					errorMessageHandler['message-limit']
@@ -109,7 +109,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 			const contextPrevMessages = await getContext(
 				msg,
 				phoneFrom,
-				documentUpdates
+				document
 			)
 			if (contextPrevMessages) {
 				context = parseMessages(contextPrevMessages)
