@@ -7,10 +7,13 @@ import messageHandler from './messages/messageHandler'
 import { uploadImage } from './apis/images'
 import ValidPhones from './models/ValidPhones'
 import { filter } from 'lodash'
+import Message from './models/Message'
 
 dotenv.config()
 
-const { blu, grn } = new Logger()
+const { blu, grn, log } = new Logger()
+
+const NODE_ENV = process.env.NODE_ENV
 
 const main = async () => {
 	connectDb()
@@ -19,7 +22,7 @@ const main = async () => {
 		authStrategy: new LocalAuth(),
 		puppeteer: {
 			slowMo: 300,
-			args: ['--no-sandbox']
+			args: NODE_ENV === 'production' ? ['--no-sandbox'] : [],
 		},
 	})
 

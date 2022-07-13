@@ -2,8 +2,6 @@ import { BlobServiceClient } from '@azure/storage-blob'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import Logger from '../utils/Logger'
-import fs from 'fs'
-import path from 'path'
 
 const { err, log, mgt, ylw } = new Logger()
 

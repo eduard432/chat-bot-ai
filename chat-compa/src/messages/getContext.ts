@@ -1,4 +1,3 @@
-import { keyWordsCompletition } from '../openai/openai'
 import Logger from '../utils/Logger'
 import Message, { Message as MessageType } from '../models/Message'
 import Conversation, {
@@ -8,23 +7,17 @@ import Conversation, {
 const { gry, log } = new Logger()
 
 export const getContext = async (
-	msg: string,
+	search: string,
 	phoneFrom: string,
 	document: ConversationType | null
 ) => {
 	if (document) {
-		// Get key words of the msg
-		const keyWordsCompl = await keyWordsCompletition(
-			`"${msg}"\nPalabras clave:`
-		)
-		gry(keyWordsCompl)
-
 		// Search for context
 		const contextPrevMessages = await Message.find(
 			{
 				phoneConversation: phoneFrom,
 				$text: {
-					$search: keyWordsCompl,
+					$search: search,
 				},
 			},
 			{ score: { $meta: 'textScore' } },
@@ -46,14 +39,14 @@ export const getContext = async (
 		const messagesDocument = await Conversation.findOne({ phone: phoneFrom })
 			.where('messages')
 			.slice([index - 2, 6])
-			// .populate({
-			// 	path: 'messages',
-			// 	select: {
-			// 		text: 1,
-			// 		fromServer: 1,
-			// 		_id: 0,
-			// 	},
-			// })
+		// .populate({
+		// 	path: 'messages',
+		// 	select: {
+		// 		text: 1,
+		// 		fromServer: 1,
+		// 		_id: 0,
+		// 	},
+		// })
 
 		const matchedMessages = await Message.find({
 			_id: {

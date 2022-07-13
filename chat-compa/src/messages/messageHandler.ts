@@ -1,15 +1,16 @@
+import { random } from 'lodash'
 import WAWebJS, { Client } from 'whatsapp-web.js'
-import Conversation from '../models/Conversation'
-import { friendCompletition } from '../openai/openai'
-import Logger from '../utils/Logger'
+
+import { friendCompletition, keyWordsCompletition } from '../openai/openai'
+import { getContext } from './getContext'
 import { parseMessages } from '../utils/parseMessages'
 import { wait, waitForTypeMessage } from '../utils/wait'
+import Conversation from '../models/Conversation'
 import errorMessageHandler from './errorMessageHandler'
+import Logger from '../utils/Logger'
 import mediaHandler from './mediaHandler'
-import { validatePhone } from '../validator/validatePhone'
-import { random } from 'lodash'
 import Message from '../models/Message'
-import { getContext } from './getContext'
+// import { validatePhone } from '../validator/validatePhone'
 
 const { err, grn, blu, log, gry } = new Logger()
 
@@ -105,9 +106,46 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 
 		let context = ''
 
-		if (document) {
+		if (message.hasQuotedMsg) {
+			const quotedMessage = await message.getQuotedMessage()
+			// quotedMessage.body == texto del mensaje al que se responde (el antiguo)
+			if (quotedMessage.body) {
+				const quotedMsg = quotedMessage.body
+				const contextPrevMessages = await getContext(
+					quotedMsg,
+					phoneFrom,
+					document
+				)
+				if (typeof contextPrevMessages?.[0] !== 'undefined') {
+					log({contextPrevMessages})
+					context = parseMessages(contextPrevMessages)
+					if (context !== '') {
+						context =
+							'Mensajes anteriores:\n\n' +
+							context +
+							'\n' +
+							'Conversación actual:\n'
+					}
+				} else {
+					context = parseMessages([
+						{
+							text: quotedMessage.body,
+							fromServer: quotedMessage.fromMe,
+							phoneConversation: phoneFrom,
+						},
+					])
+				}
+			}
+		}
+
+		if (document && context == '') {
+			// Get key words of the msg
+			const keyWordsCompl = await keyWordsCompletition(
+				`"${msg}"\nPalabras clave:`
+			)
+			gry(keyWordsCompl)
 			const contextPrevMessages = await getContext(
-				msg,
+				keyWordsCompl,
 				phoneFrom,
 				document
 			)
