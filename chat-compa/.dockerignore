@@ -3,4 +3,3 @@ Dockerfile/
 .env
 playground.mongodb
 dist/
-.wwebjs_auth/

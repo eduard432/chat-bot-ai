@@ -43,7 +43,7 @@ exampleConversation.txt
 images/**
 dist
 node_modules
-.env
+*.env
 package-lock.json
 examples
 exampleConversation.txt
