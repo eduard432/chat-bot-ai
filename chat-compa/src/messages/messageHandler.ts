@@ -31,7 +31,12 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 
 		// The message hasMedia if true, download and analyze
 		if (message.hasMedia) {
-			msg = ((await mediaHandler(message)) || '') + ' ' + message.body
+			// msg = ((await mediaHandler(message)) || '') + ' ' + message.body
+			const mediaToText = await mediaHandler(message)
+			if(!mediaToText?.ok){
+				return client.sendMessage(phoneFrom, errorMessageHandler['unsupported-media'])
+			}
+			msg = (mediaToText.message || '') + ' ' + message.body
 		}
 
 		// Search for prev conversations
