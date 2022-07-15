@@ -27,11 +27,9 @@ export const getContext = async (
 				},
 			}
 		).sort('-date')
-		log(contextPrevMessages)
-
-		const index = document.messages.indexOf(contextPrevMessages[0]?._id)
-
-		log({ index })
+		
+		const id = contextPrevMessages[0]?._id
+		const index = document.messages.indexOf(id)
 
 		if (index === -1) {
 			return [undefined]

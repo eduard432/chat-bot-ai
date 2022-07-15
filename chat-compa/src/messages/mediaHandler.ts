@@ -38,7 +38,7 @@ const audioHandler = async (media: WAWebJS.MessageMedia, phone: string) => {
 	await convertOggToWav(buffer, fileName)
 	const bufferWav = await readFile(`./audios/${name}.wav`)
 	const text = await describeAudioApi(bufferWav)
-	const url = await uploadBlob(buffer, fileName, 'audios-bot')
+	const url = await uploadBlob(bufferWav, `${name}.wav`, 'audios-bot')
 	if (url) {
 		await fs.unlink(`./audios/${name}.wav`)
 		return {

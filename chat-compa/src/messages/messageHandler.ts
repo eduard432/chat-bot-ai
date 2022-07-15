@@ -119,7 +119,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 				const contextPrevMessages = await getContext(
 					quotedMsg,
 					phoneFrom,
-					document
+					documentUpdates
 				)
 				if (typeof contextPrevMessages?.[0] !== 'undefined') {
 					log({contextPrevMessages})
@@ -152,7 +152,7 @@ const messageHandler = async (message: WAWebJS.Message, client: Client) => {
 			const contextPrevMessages = await getContext(
 				keyWordsCompl,
 				phoneFrom,
-				document
+				documentUpdates
 			)
 			if (contextPrevMessages) {
 				context = parseMessages(contextPrevMessages)
