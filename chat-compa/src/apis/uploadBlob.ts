@@ -1,17 +1,15 @@
 import { BlobServiceClient } from '@azure/storage-blob'
-import { v1 as uuid } from 'uuid'
 import Logger from '../utils/Logger'
 
 const { err, log, mgt } = new Logger()
 
 export const uploadBlob = async (
 	data: Buffer,
-	phone: string,
+	name: string,
 	container: string
 ): Promise<string | null> => {
 	const BUCKET_CONNECTION_STRING: any = process.env.BUCKET_CONNECTION_STRING
 	try {
-		const name = `${phone}-${uuid()}`
 		const blobServiceClient = BlobServiceClient.fromConnectionString(
 			BUCKET_CONNECTION_STRING
 		)

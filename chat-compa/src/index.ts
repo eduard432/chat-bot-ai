@@ -4,10 +4,12 @@ import { Client, LocalAuth } from 'whatsapp-web.js'
 import qrcode from 'qrcode-terminal'
 import Logger from './utils/Logger'
 import messageHandler from './messages/messageHandler'
-import { uploadImage } from './apis/images'
-import ValidPhones from './models/ValidPhones'
 import { filter } from 'lodash'
 import Message from './models/Message'
+import mediaHandler from './messages/mediaHandler'
+import { readFile } from './helpers/fs'
+import { convertOggToWav, describeAudioApi } from './apis/audios'
+import fs from 'fs/promises'
 
 dotenv.config()
 
@@ -56,4 +58,13 @@ const main = async () => {
 	await client.initialize()
 }
 
-main()
+main() 
+// ;(async () => {
+// 	const fileName = 'example'
+// 	const buffer = await readFile('./audios/Voz-006.ogg')
+// 	await convertOggToWav(buffer, fileName)
+// 	const bufferWav = await readFile(`./audios/${fileName}.wav`)
+// 	const text = await describeAudioApi(bufferWav)
+// 	log(text)
+// 	await fs.unlink(`./audios/${fileName}.wav`)
+// })()
